@@ -1,0 +1,72 @@
+#!/bin/bash
+
+export MARKPATH=$HOME/.marks
+
+if [ ! -d "$MARKPATH" ]; then
+    mkdir -p "$MARKPATH"
+fi
+
+# Jump to predefined mark
+function jump
+{ 
+    cd -P "$MARKPATH/$1" 2>/dev/null || echo "[ERROR] No such mark: $1" >&2
+}
+
+# Mark a directory
+# $1: mark name, default to directory basename
+function mark
+{ 
+    local cur="$(pwd)"
+    local name="$1"
+
+    if [ -z "$name" ]; then
+        name=$(basename "$cur")
+    fi
+
+    ln -s "$cur" "$MARKPATH/$name"
+}
+
+# Unmark a directory
+# $1: mark name
+function unmark
+{ 
+    local name="$1"
+
+    if [ -z "$name" ]; then
+        echo "[ERROR] Mark name must be provided" >&2
+    elif [ ! -L "$MARKPATH/$name" ]; then
+        echo "[ERROR] Mark name doesn't exist" >&2
+    else
+        unlink "$MARKPATH/$name"
+    fi
+}
+
+# List the predefined marks
+function marks
+{
+    local file
+
+    for file in $MARKPATH/*; do
+        if [ -L "$file" ]; then
+            printf "%-15s -> %s\n" "$(basename $file)" "$(readlink $file)"
+        fi
+    done
+}
+
+# Set auto bash completion for command jump or umark
+function _completemarks
+{
+    local cword=${COMP_WORDS[COMP_CWORD]}
+    local mark_list=$(find $MARKPATH -type l -printf "%f\n")
+
+    # Only do complete on first argument
+    if [ $COMP_CWORD -eq 1 ]; then
+        COMPREPLY=($(compgen -W "${mark_list[@]}" -- "$cword"))
+    else
+        COMPREPLY=()
+    fi
+
+    return 0
+}
+
+complete -F _completemarks jump unmark
