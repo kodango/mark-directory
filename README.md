@@ -7,7 +7,7 @@ It's a improved version of [Quickly navigate your filesystem from the command-li
 
 * Provides a simple install/uninstall script;
 * Only complete the first argument for `jump` or `unmark`;
-* Make the marks command work both GNU Linux and MAC OSX;
+* Make the `marks` command work both GNU Linux and MAC OSX;
 * More hint when error occured, redirect error message to stderr;
 * When run `mark` command, set default mark name to directory basename;
 
