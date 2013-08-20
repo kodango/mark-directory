@@ -9,7 +9,18 @@ fi
 # Jump to predefined mark
 function jump
 { 
-    cd -P "$MARKPATH/$1" 2>/dev/null || echo "[ERROR] No such mark: $1" >&2
+    local name=$1
+
+    if [ -z "$name" ]; then        # jump to home directory
+        cd
+    elif [ "$name" = "-" ]; then   # jump to last visited directory
+        cd -
+    elif [ -d "$name" ]; then      # jump to the directory directly
+        cd "$name"
+    else                           # jump to mark directory
+        cd -P "$MARKPATH/$name" 2>/dev/null || \
+            echo "[ERROR] No such mark: $name" >&2
+    fi
 }
 
 # Mark a directory
@@ -19,7 +30,7 @@ function mark
     local cur="$(pwd)"
     local name="$1"
 
-    if [ -z "$name" ]; then
+    if [ -z "$name" ]; then  # use basename as mark name
         name=$(basename "$cur")
     fi
 
@@ -70,3 +81,6 @@ function _completemarks
 }
 
 complete -F _completemarks jump unmark
+
+# Create aliases for jump
+alias j=jump
