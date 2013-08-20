@@ -10,6 +10,7 @@ It's a improved version of [Quickly navigate your filesystem from the command-li
 * Make the `marks` command work both GNU Linux and MAC OSX;
 * More hint when error occured, redirect error message to stderr;
 * When run `mark` command, set default mark name to directory basename;
+* Make `jump` command more smarter, just like `cd`;
 
 Usage
 =====
@@ -29,5 +30,13 @@ Then play it with follow commands:
     $ jump a-name-you-like # jump to the marked directory based on the name
     $ marks                # list the predefined marks
     $ unmark a-name-you-like # unmake the name
+
+The `jump` commands(I've add an alias named `j` for it) is very smarter:
+
+    $ jump           # like `cd`, jump to your home
+    $ jump -         # like `cd -`, jump to last visited directory
+    $ jump $dir      # uh... just jump to the directory directly
+    $ jump ~kodango  # same as above, ~kodango will be expanded to kodango's home directory
+    $ jump markname  # jump to the corresponding marked directory
 
 That's all!
