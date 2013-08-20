@@ -5,9 +5,7 @@ Provides a quick way to change directory from the command line.
 
 It's so small that everyone can understand it and then customize for yourself.
 
-It's an improved version of which originally written by [@jeroen janssens](https://twitter.com/jeroenhjanssens/), thanks for his smart work.
-
-[@jeroen janssens](https://twitter.com/jeroenhjanssens/) has posted an article "[Quickly navigate your filesystem from the command-line](http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html)" to introduce the smart tool
+It's an improved version of which originally written by [@jeroen janssens](https://twitter.com/jeroenhjanssens/). [@jeroen janssens](https://twitter.com/jeroenhjanssens/) has posted an article "[Quickly navigate your filesystem from the command-line](http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html)" to introduce this smart tool.
 
 The improved points:
 
