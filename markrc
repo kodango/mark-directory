@@ -58,7 +58,9 @@ function marks
     local file
 
     for file in $MARKPATH/*; do
-        if [ -L "$file" ]; then
+        if [ ! -e "$file" ]; then # clean broken symbolic links
+            unlink "$file"
+        elif [ -L "$file" ]; then
             printf "%-15s -> %s\n" "$(basename $file)" "$(readlink $file)"
         fi
     done
