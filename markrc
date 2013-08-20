@@ -68,7 +68,7 @@ function marks
 function _completemarks
 {
     local cword=${COMP_WORDS[COMP_CWORD]}
-    local mark_list=$(find $MARKPATH -type l -printf "%f\n")
+    local mark_list=$(marks | awk -F '->' '{print $1}' | sed 's/ *$//g')
 
     # Only do complete on first argument
     if [ $COMP_CWORD -eq 1 ]; then
@@ -80,7 +80,7 @@ function _completemarks
     return 0
 }
 
-complete -F _completemarks jump unmark
+complete -F _completemarks jump unmark j
 
 # Create aliases for jump
 alias j=jump
