@@ -3,16 +3,20 @@ INTRO
 
 Provides a quick way to change directory from the command line.
 
-It's a improved version of [Quickly navigate your filesystem from the command-line](http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html) which originally written by [@jeroen janssens](https://twitter.com/jeroenhjanssens/):
+It's so small that everyone can understand it and then customize for yourself.
+
+It's an improved version of which originally written by [@jeroen janssens](https://twitter.com/jeroenhjanssens/), thanks for his smart work.
+
+[@jeroen janssens](https://twitter.com/jeroenhjanssens/) has posted an article "[Quickly navigate your filesystem from the command-line](http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html)" to introduce the smart tool
+
+The improved points:
 
 * Provides a simple install/uninstall script;
 * Only complete the first argument for `jump` or `unmark`;
-* Make the `marks` command work both GNU Linux and MAC OSX;
+* Make the `marks` command work on both GNU Linux and MAC OSX;
 * More hint when error occured, redirect error message to stderr;
 * When run `mark` command, set default mark name to directory basename;
 * Make `jump` command more smarter, just like `cd`;
-
-The main advantage is, the tool is so small that everyone can understand it and then customize for yourself.
 
 Usage
 =====
@@ -24,7 +28,7 @@ First install from github:
     $ sh install_markrc.sh
     $ source ~/.markrc
 
-Then play it with follow commands:
+Then play it with following commands:
 
     $ cd /your/favorite/direcotry
     $ mark a-name-you-like # make a mark
@@ -33,7 +37,7 @@ Then play it with follow commands:
     $ marks                # list the predefined marks
     $ unmark a-name-you-like # unmake the name
 
-The `jump` commands(I've add an alias named `j` for it) is very smarter:
+The `jump` command, which I've add an alias named `j` for, is very smarter:
 
     $ jump           # like `cd`, jump to your home
     $ jump -         # like `cd -`, jump to last visited directory
