@@ -12,6 +12,8 @@ It's a improved version of [Quickly navigate your filesystem from the command-li
 * When run `mark` command, set default mark name to directory basename;
 * Make `jump` command more smarter, just like `cd`;
 
+The main advantage is, the tool is so small that everyone can understand it and then customize for yourself.
+
 Usage
 =====
 
