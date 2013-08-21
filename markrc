@@ -6,6 +6,11 @@ if [ ! -d "$MARKPATH" ]; then
     mkdir -p "$MARKPATH"
 fi
 
+function _err()
+{
+    echo "[ERROR] $@" >&2
+}
+
 # Jump to predefined mark
 function jump
 { 
@@ -19,7 +24,7 @@ function jump
         cd "$name"
     else                           # jump to mark directory
         cd -P "$MARKPATH/$name" 2>/dev/null || \
-            echo "[ERROR] No such mark: $name" >&2
+            _err "No such mark: $name"
     fi
 }
 
@@ -34,7 +39,8 @@ function mark
         name=$(basename "$cur")
     fi
 
-    ln -s "$cur" "$MARKPATH/$name"
+    name=$(echo "$name" | tr A-Z a-z)
+    ln -snf "$cur" "$MARKPATH/$name"
 }
 
 # Unmark a directory
@@ -44,9 +50,9 @@ function unmark
     local name="$1"
 
     if [ -z "$name" ]; then
-        echo "[ERROR] Mark name must be provided" >&2
+        _err "Mark name must be provided"
     elif [ ! -L "$MARKPATH/$name" ]; then
-        echo "[ERROR] Mark name doesn't exist" >&2
+        _err "Mark name doesn't exist"
     else
         unlink "$MARKPATH/$name"
     fi
@@ -65,7 +71,7 @@ function marks
         if [ ! -e "$file" ]; then # clean broken symbolic links
             unlink "$file"
         else
-            printf "%-15s -> %s\n" "$(basename $file)" "$(readlink $file)"
+            printf "%-15s -> %s\n" "$(basename "$file")" "$(readlink "$file")"
         fi
     done
 }
@@ -86,7 +92,7 @@ function _completemarks
     return 0
 }
 
-complete -F _completemarks jump unmark j
+complete -o nospace -F _completemarks jump unmark j
 
 # Create aliases for jump
 alias j=jump
