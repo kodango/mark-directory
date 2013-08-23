@@ -92,7 +92,7 @@ function _completemarks
     return 0
 }
 
-complete -o nospace -F _completemarks jump unmark j
+complete -o default -o nospace -F _completemarks jump unmark j
 
 # Create aliases for jump
 alias j=jump
