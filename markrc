@@ -65,8 +65,10 @@ function mark
     # Create a symbolic link to current directory
     if ln -snf "$cur" "$MARKPATH/$name"; then
         _info "Create mark '$name -> $cur' successfully"
+        return 0
     else
         _err "Create mark '$name -> $cur' failed"
+        return 1
     fi
 }
 
@@ -79,17 +81,23 @@ function unmark
         name=$(marks | awk -F'->' '{ if ($2 ~ "'"$(pwd)"'$") {print $1} }' | sed 's/ *//g')
     fi
 
-    if [ ! -L "$MARKPATH/$name" ]; then
+    if [ -z "$name" ]; then
+        _err "No mark points to current directory"
+        return 1
+    elif [ ! -L "$MARKPATH/$name" ]; then
         # No valid mark found
         _err "No such mark: $name"
+        return 1
     else
         local target="$(readlink $MARKPATH/$name)"
 
         # Delete the symbolic link
         if unlink "$MARKPATH/$name"; then
             _info "Delete mark '$name -> $target' successfully"
+            return 0
         else
             _err "Delete mark '$name -> $target' failed"
+            return 1
         fi
     fi
 }
