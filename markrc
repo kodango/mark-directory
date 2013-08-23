@@ -6,9 +6,16 @@ if [ ! -d "$MARKPATH" ]; then
     mkdir -p "$MARKPATH"
 fi
 
+# Print error messges
 function _err()
 {
-    echo "[ERROR] $@" >&2
+    echo -e "\033[1;31m[ERROR] $@\033[0m" >&2
+}
+
+# Print notice messages
+function _info()
+{
+    echo "[INFO] $@"
 }
 
 # Jump to predefined mark
@@ -16,45 +23,74 @@ function jump
 { 
     local name=$1
 
-    if [ -z "$name" ]; then        # jump to home directory
-        cd
-    elif [ "$name" = "-" ]; then   # jump to last visited directory
-        cd -
-    elif [ -d "$name" ]; then      # jump to the directory directly
-        cd "$name"
-    else                           # jump to mark directory
-        cd -P "$MARKPATH/$name" 2>/dev/null || \
+    if [ -z "$name" ]; then
+        cd # jump to home directory
+    elif [ "$name" = "-" ]; then
+        cd - # jump to last visited directory
+    elif [ -d "$name" ]; then
+        cd "$name" # jump to the directory directly
+    else # jump to mark directory
+        # Generate all complete results
+        local mark_list=($(compgen -f -- "$MARKPATH/$name"))
+
+        if [ ${#mark_list[@]} -eq 0 ]; then
+            # invalid mark name, print error
             _err "No such mark: $name"
+            return 1
+        elif [ ${#mark_list[@]} -eq 1 ]; then
+            # only one result, jump right now
+            cd -P "${mark_list[0]}"
+        else # multiple results, show select menu
+            select name in ${mark_list[@]}; do
+                cd -P "$name" && break
+            done
+        fi
     fi
 }
 
 # Mark a directory
-# $1: mark name, default to directory basename
 function mark
 { 
     local cur="$(pwd)"
     local name="$1"
 
-    if [ -z "$name" ]; then  # use basename as mark name
+    if [ -z "$name" ]; then
+        # use basename as mark name by default
         name=$(basename "$cur")
     fi
 
+    # Convert mark name to lowercase
     name=$(echo "$name" | tr A-Z a-z)
-    ln -snf "$cur" "$MARKPATH/$name"
+
+    # Create a symbolic link to current directory
+    if ln -snf "$cur" "$MARKPATH/$name"; then
+        _info "Create mark '$name -> $cur' successfully"
+    else
+        _err "Create mark '$name -> $cur' failed"
+    fi
 }
 
 # Unmark a directory
-# $1: mark name
 function unmark
 { 
     local name="$1"
 
-    if [ -z "$name" ]; then
-        _err "Mark name must be provided"
-    elif [ ! -L "$MARKPATH/$name" ]; then
-        _err "Mark name doesn't exist"
+    if [ -z "$name" ]; then # Default to unmark current directory
+        name=$(marks | awk -F'->' '{ if ($2 ~ "'"$(pwd)"'$") {print $1} }' | sed 's/ *//g')
+    fi
+
+    if [ ! -L "$MARKPATH/$name" ]; then
+        # No valid mark found
+        _err "No such mark: $name"
     else
-        unlink "$MARKPATH/$name"
+        local target="$(readlink $MARKPATH/$name)"
+
+        # Delete the symbolic link
+        if unlink "$MARKPATH/$name"; then
+            _info "Delete mark '$name -> $target' successfully"
+        else
+            _err "Delete mark '$name -> $target' failed"
+        fi
     fi
 }
 
@@ -92,10 +128,24 @@ function _completemarks
     return 0
 }
 
-complete -o default -o nospace -F _completemarks jump j
-complete -o nospace -F _completemarks unmark u
-
 # Create aliases for convenience
+
+# Think: jump or go to
 alias j=jump
+alias g=jump 
+
+# Think: unmark or delete
 alias u=unmark
+alias d=unmark
+
+# Think: mark or save a mark
 alias m=mark
+alias s=mark
+
+# Think: list marks or print marks
+alias l=marks
+alias p=marks
+
+# Set auto complete
+complete -o default -o nospace -F _completemarks jump j g
+complete -o nospace -F _completemarks unmark u d
