@@ -3,10 +3,12 @@
 cp markrc ~/.markrc
 
 if [ -f ~/.bash_profile ]; then
-    if ! grep -q markrc ~/.bash_profile; then
+    if ! grep -sq markrc ~/.bash_profile; then
         echo '[ -f ~/.markrc ] && source ~/.markrc' >> ~/.bash_profile
     fi
-else
+fi
+
+if [ -f ~/.bashrc ]; then
     if ! grep -sq markrc ~/.bashrc; then
         echo '[ -f ~/.markrc ] && source ~/.markrc' >> ~/.bashrc
     fi
