@@ -2,6 +2,11 @@
 
 cp markrc ~/.markrc
 
+# If os is Mac OSX, create .bash_profile if not exist
+if [ "$(uname)" = "Darwin" ]; then
+    touch ~/.bash_profile
+fi
+
 if [ -f ~/.bash_profile ]; then
     if ! grep -sq markrc ~/.bash_profile; then
         echo '[ -f ~/.markrc ] && source ~/.markrc' >> ~/.bash_profile
