@@ -19,4 +19,7 @@ if [ -f ~/.bashrc ]; then
     fi
 fi
 
+# Install chsdir script
+cp chsdir ~/.chsdir && chmod +x ~/.chsdir
+
 echo "Install successfully, please re-login the terminal, or just run 'source ~/.markrc' to start"
