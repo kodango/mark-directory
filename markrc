@@ -31,7 +31,7 @@ function _info()
 
 # Jump to predefined mark
 function jump()
-{ 
+{
     local name=$1
 
     if [ -z "$name" ]; then
@@ -42,13 +42,17 @@ function jump()
         cd "$name" # jump to the directory directly
     else # jump to mark directory
         # Generate all complete results
-        local mark_list=($(compgen -f -- "$MARKPATH/$name"))
+        local mark_list mark_len
 
-        if [ ${#mark_list[@]} -eq 0 ]; then
+        # Pathname may contains space, so set the IFS before
+        IFS=$'\n' mark_list=($(compgen -f -- "$MARKPATH/$name"))
+        mark_len=${#mark_list[@]}
+
+        if [ $mark_len -eq 0 ]; then
             # invalid mark name, print error
             _err "No such mark: $name"
             return 1
-        elif [ ${#mark_list[@]} -eq 1 ]; then
+        elif [ $mark_len -eq 1 ]; then
             # only one result, jump right now
             cd -P "${mark_list[0]}"
         else # multiple results, show select menu
@@ -61,7 +65,7 @@ function jump()
 
 # Mark a directory
 function mark()
-{ 
+{
     local cur="$(pwd)"
     local name="$1"
 
@@ -85,7 +89,7 @@ function mark()
 
 # Unmark a directory
 function unmark()
-{ 
+{
     local name="$1"
 
     if [ -z "$name" ]; then # Default to unmark current directory
@@ -243,7 +247,7 @@ function _filedir_xspec()
 
 # Think: jump or go to
 alias j=jump
-alias g=jump 
+alias g=jump
 
 # Think: unmark or delete
 alias u=unmark
