@@ -6,10 +6,6 @@ if [ ! -d "$MARKPATH" ]; then
     mkdir -p "$MARKPATH"
 fi
 
-# Merge chsdir function
-# https://code.google.com/p/easyscripts/wiki/chsdir
-CHSDIR_BIN="$HOME/.chsdir"
-
 # Print error messges
 function _err()
 {
@@ -86,7 +82,7 @@ function unmark()
     local name="$1"
 
     if [ -z "$name" ]; then # Default to unmark current directory
-        name=$(marks | awk -F'->' '{ if ($2 ~ "'"$(pwd)"'$") {print $1} }' | sed 's/ *//g')
+        name=$(marks | awk -F'->' '{ if ($2 ~ "'"$(pwd)"'$") {print $1} }' | sed 's/ *$//g')
     fi
 
     if [ -z "$name" ]; then
